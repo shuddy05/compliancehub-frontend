@@ -1,0 +1,226 @@
+{
+  "info": {
+    "name": "ComplianceHub Onboarding Flow",
+    "description": "Complete API testing collection for the onboarding flow",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. User Registration",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"TestPassword123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. User Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"TestPassword123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. Get User Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "me"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. Create Company (Tenant)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test SME Company\",\n  \"slug\": \"test-sme-{{$timestamp}}\",\n  \"description\": \"Test Nigerian SME for compliance automation\",\n  \"website\": \"https://testsme.com\",\n  \"industry\": \"Technology\",\n  \"maxUsers\": 50\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/tenants",
+          "host": ["{{baseUrl}}"],
+          "path": ["tenants"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. Get User's Companies",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/tenants",
+          "host": ["{{baseUrl}}"],
+          "path": ["tenants"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. Get Available Plans",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/subscriptions/plans",
+          "host": ["{{baseUrl}}"],
+          "path": ["subscriptions", "plans"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "7. Get Specific Plan Details",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/subscriptions/plans/{{planId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["subscriptions", "plans", "{{planId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "8. Create Subscription",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"planId\": \"{{planId}}\",\n  \"billingCycle\": \"monthly\",\n  \"autoRenew\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/subscriptions",
+          "host": ["{{baseUrl}}"],
+          "path": ["subscriptions"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "9. Get Current Subscription",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/subscriptions/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["subscriptions", "me"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "10. Get Company Details",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/tenants/{{tenantId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["tenants", "{{tenantId}}"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tenantId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "planId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

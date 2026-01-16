@@ -1,0 +1,163 @@
+### ComplianceHub Onboarding Flow Testing
+### Test the complete user onboarding journey
+### Prerequisites: NestJS backend running on http://localhost:3000
+
+@baseUrl = http://localhost:3000/api/v1
+@contentType = application/json
+
+###############################################################################
+## STEP 1: SIGN UP - Register New User
+###############################################################################
+### Create a new user account
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@testcompany.com",
+  "password": "SecurePassword123!"
+}
+
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+###############################################################################
+## STEP 1B: LOGIN - Get Access Token
+###############################################################################
+### Use credentials from signup to get token
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "john.doe@testcompany.com",
+  "password": "SecurePassword123!"
+}
+
+###############################################################################
+## STEP 2: COMPANY SETUP - Create Tenant (Company)
+###############################################################################
+### After successful login, create a company/tenant
+### Replace YOUR_ACCESS_TOKEN with the token from login response
+POST {{baseUrl}}/tenants
+Content-Type: {{contentType}}
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+{
+  "name": "Test SME Company",
+  "slug": "test-sme-company",
+  "description": "A test Nigerian SME for compliance automation",
+  "website": "https://testsme.com",
+  "industry": "Technology",
+  "maxUsers": 50
+}
+
+###############################################################################
+## STEP 2B: GET USER'S TENANTS - Verify Company Created
+###############################################################################
+### Fetch all tenants associated with the current user
+GET {{baseUrl}}/tenants
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+###############################################################################
+## STEP 3A: PLAN SELECTION - Get All Available Plans
+###############################################################################
+### Retrieve all subscription plans (Free, Pro, Enterprise)
+GET {{baseUrl}}/subscriptions/plans
+
+###############################################################################
+## STEP 3B: GET SPECIFIC PLAN DETAILS
+###############################################################################
+### Get details of a specific plan
+### Replace PLAN_ID with the actual plan ID from the list above
+GET {{baseUrl}}/subscriptions/plans/PLAN_ID
+
+###############################################################################
+## STEP 4: CHECKOUT - Create Subscription
+###############################################################################
+### Subscribe to a plan (after selecting it)
+### Replace PLAN_ID with actual plan ID and YOUR_ACCESS_TOKEN
+POST {{baseUrl}}/subscriptions
+Content-Type: {{contentType}}
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+{
+  "planId": "PLAN_ID",
+  "billingCycle": "monthly",
+  "autoRenew": true
+}
+
+###############################################################################
+## STEP 4B: GET CURRENT SUBSCRIPTION
+###############################################################################
+### Check the user's active subscription
+GET {{baseUrl}}/subscriptions/me
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+###############################################################################
+## VERIFY: GET CURRENT USER
+###############################################################################
+### Fetch the logged-in user's complete profile
+GET {{baseUrl}}/users/me
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+###############################################################################
+## VERIFY: GET TENANT DETAILS
+###############################################################################
+### Get detailed info about the created company
+### Replace TENANT_ID with actual tenant ID
+GET {{baseUrl}}/tenants/TENANT_ID
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+###############################################################################
+## COMPLETE FLOW TEST SEQUENCE
+###############################################################################
+### Follow this order to test the entire onboarding:
+### 
+### 1. Sign Up → Get registration confirmation
+### 2. Login → Copy accessToken from response
+### 3. Create Tenant → Use token, copy tenant ID
+### 4. Get Plans → View available plans, copy a plan ID
+### 5. Create Subscription → Use token and plan ID
+### 6. Verify Current User
+### 7. Verify Tenant Created
+### 8. Verify Subscription Active
+###
+### Each step should return 200 or 201 status code
+
+###############################################################################
+## ADDITIONAL ENDPOINTS TO TEST LATER
+###############################################################################
+
+### Get Tenant Users (who has access to this company)
+GET {{baseUrl}}/tenants/TENANT_ID/users
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+### Add User to Tenant (invite team member)
+POST {{baseUrl}}/tenants/TENANT_ID/users
+Content-Type: {{contentType}}
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+{
+  "userId": "USER_ID",
+  "role": "member"
+}
+
+### Update Tenant
+PUT {{baseUrl}}/tenants/TENANT_ID
+Content-Type: {{contentType}}
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+{
+  "name": "Updated Company Name",
+  "description": "Updated description",
+  "maxUsers": 100
+}
+
+### Cancel Subscription
+POST {{baseUrl}}/subscriptions/SUBSCRIPTION_ID/cancel
+Content-Type: {{contentType}}
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+{
+  "reason": "Testing cancellation"
+}
